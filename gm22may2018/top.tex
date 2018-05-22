@@ -1,6 +1,10 @@
 %!TEX program = xelatex
 \documentclass{beamer}
 
+
+
+
+
 \usepackage{blindtext}
 \usepackage[absolute,overlay]{textpos}
 \usepackage{graphicx} % for pdf, bitmapped graphics files
@@ -9,7 +13,7 @@
 \usetheme{Execushares}
 \def\checkmark{\tikz\fill[scale=0.4](0,.35) -- (.25,0) -- (1,.7) -- (.25,.15) -- cycle;}
 
-\title{Back-Pressure based NoC to provide guaranteed and In-Order packet deliveries}
+\title{Back-Pressured BFTs on FPGAs}
 \subtitle{An overall review of how things stand right now}
 \author{Gurshaant Malik}
 \date{\today}
@@ -31,6 +35,26 @@
 			\item AXI-4 Stream Interconnect.\pause(A Xilinx IP).
 		\end{enumerate}
 	\end{frame}
+	
+	\begin{frame}
+    \frametitle{What are the design wins?}
+    \pause
+           Back-Pressure BFT is the only NoC that achieves all of the following:
+           \pause
+           \begin{itemize}
+               \item Guaranteed packet delivery.
+               \pause 
+               \item In-Order packet delivery.
+               \pause
+               \item Scales to support any number of clients.
+               \pause
+               \item FPGA resource efficient.
+               \pause
+               \item Meets frequency targets of 300MHz+
+               \pause
+               \item AXI-4-Stream Compatible.
+           \end{itemize}
+    \end{frame}
 
 	\setcounter{showProgressBar}{1}
 	\setcounter{showSlideNumbers}{1}
@@ -39,8 +63,11 @@
 	
 	    \begin{frame}\frametitle{Specifications}
 	    \begin{textblock*}{3.5cm}(3.5cm, 2.5cm) % {block width} (coords)
-	        \visible<1>{\includegraphics[scale=0.25]{cmu_connect.png}}
+            \visible<1>{\includegraphics[scale=0.25]{cmu_connect.png}}
+            \visible<1>{\scalebox{.3}{Credits : \href{http://users.ece.cmu.edu/~mpapamic/connect}{CMU Connect}}}
+
 	    \end{textblock*}
+	    \pause
 	    \pause
 	    \begin{itemize}
 	        \item Simple Input Queued.
@@ -57,9 +84,9 @@
 	        \pause
 	        \item Separate Input-First Round-Robin allocator.
 	    \end{itemize}
-	    \pause
 	    \begin{textblock*}{3cm}(9cm, 5.5cm) % {block width} (coords)
-            \visible<2,3,4,5,6>{\includegraphics[height=3.5cm, width=3.5cm]{cmu_connect.png}}
+            \visible<2,3,4,5,6,7>{\includegraphics[height=3.5cm, width=3.5cm]{cmu_connect.png}}
+
         \end{textblock*}
 	    \end{frame}
 	    
@@ -96,6 +123,7 @@
 	    
 	    {\begin{textblock*}{3.5cm}(3cm, 3.5cm) % {block width} (coords)
 	        \visible<4>{\includegraphics[scale=0.25]{local.png}}
+	        \visible<4>{\scalebox{.3}{Credits : \href{https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=8056804}{Nachiket Kapre}}}
 	    \end{textblock*}}
 	    \end{frame}
 	    
@@ -160,25 +188,6 @@
 	    \end{frame}	
 	
 	\section{The Back-Pressure NoC}
-        \begin{frame}
-        \frametitle{What are the design wins?}
-           \pause
-           It is the only design that achieves all of the following:
-           \pause
-           \begin{itemize}
-               \item Guaranteed packet delivery.
-               \pause 
-               \item In-Order packet delivery.
-               \pause
-               \item Scales to support any number of clients.
-               \pause
-               \item FPGA resource efficient.
-               \pause
-               \item Meets frequency targets of 300MHz+
-               \pause
-               \item AXI-4-Stream Compatible.
-           \end{itemize}
-        \end{frame}
         
         \begin{frame}{Specifications:}
         \pause
@@ -206,9 +215,11 @@
             \end{itemize}}
             {\begin{textblock*}{3.5cm}(3cm, 2.5cm) % {block width} (coords)
 	            \visible<7>{\includegraphics[scale=0.5,trim={0 1cm 0 0},clip]{inorder.png}}
+	            \visible<7>{\scalebox{.3}{Credits : \href{https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=8056804}{Source}}}
 	        \end{textblock*}}
 	        {\begin{textblock*}{3.5cm}(3cm, 3.5cm) % {block width} (coords)
 	            \visible<10>{\includegraphics[scale=0.5]{28.png}}
+	            \visible<10>{\scalebox{.3}{Credits : \href{https://git.uwaterloo.ca/watcag/pipelined_handshakes}{WATCAG}}}
 	        \end{textblock*}}
         \end{frame}
         
@@ -254,10 +265,11 @@
         \end{frame}
         
         \begin{frame}{Test Environment Overview}
+        \pause
         \begin{itemize}
             \item Data Width : 32 bits
             \pause
-            \item Real and Synthetic communication patterns
+            \item Real and Synthetic communication patterns.
             \pause
             \item Number of Clients varied from N=2 to 128, in powers of 2.
             \pause
@@ -310,11 +322,12 @@
         \end{frame}  
         
        \begin{frame}{Frequency and Area(N=16, Virtex 7)}
+       \pause
             \begin{center}
                 \resizebox{\columnwidth}{!}{%
                 \begin{tabular}{c c c c c c c} 
                     \hline
-                    & \textbf{CMU} & \textbf{LD(TREE)} & \textbf{LD(XBAR)} & \textbf{AXI-IC} & \textbf{BP(TREE)} & \textbf{BP(TREE)}\\ [0.5ex] 
+                    & \textbf{CMU} & \textbf{LD(TREE)} & \textbf{LD(XBAR)} & \textbf{AXI-IC} & \textbf{BP(TREE)} & \textbf{BP(XBAR)}\\ [0.5ex] 
                     \hline\hline
                     \pause
                     \textbf{Peak Frequency(MHz)} & ?100? & 597 & 430 & 400 & 440 & 350\\ 
@@ -324,10 +337,9 @@
                     \hline
                 \end{tabular}}
             \end{center}
-            \pause
-            \begin{itemize}
+            \visible<5>{\begin{itemize}
                 \item These numbers can get even better.
-            \end{itemize}
+            \end{itemize}}
         \end{frame} 
         
         \begin{frame}{Summary}
@@ -353,9 +365,11 @@
             \pause
                 \item Throughput : Neck to Neck vs LD.
                 \pause 
-                \item InFlight latency : 4x to 10x better vs LD.
+                \item InFlight latency : 4x to 50x better vs LD.
                 \pause
-                \item Queuing : Neck to Neck vs LD. Few Exceptions.
+                \item Queuing : Neck to Neck vs LD. Some Exceptions.
+                \pause
+                \item Area/Frequency : Slightly bloated.
             \end{itemize}
         \end{frame} 
         
